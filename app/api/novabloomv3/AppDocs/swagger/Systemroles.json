@@ -1,0 +1,97 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "System Roles API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/rolebundles/systemroles": {
+            "get": {
+                "summary": "Get System Roles",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create System Roles",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bundle_id": {
+                                        "type": "string",
+                                        "description": "Bundle id"
+                                    },
+                                    "bundle_name": {
+                                        "type": "string",
+                                        "description": "Bundle name"
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "description": "Remark"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update System Roles",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bundle_id": {
+                                        "type": "string",
+                                        "description": "Bundle id"
+                                    },
+                                    "bundle_name": {
+                                        "type": "string",
+                                        "description": "Bundle name"
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "description": "Remark"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " System Roles id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

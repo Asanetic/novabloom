@@ -1,0 +1,209 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "System Users API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/sysusers/systemusers": {
+            "get": {
+                "summary": "Get System Users",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create System Users",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Email"
+                                    },
+                                    "tel": {
+                                        "type": "string",
+                                        "description": "Tel"
+                                    },
+                                    "user_gender": {
+                                        "type": "string",
+                                        "description": "User gender"
+                                    },
+                                    "about": {
+                                        "type": "string",
+                                        "description": "About"
+                                    },
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "Project id"
+                                    },
+                                    "project_name": {
+                                        "type": "string",
+                                        "description": "Project name"
+                                    },
+                                    "token_status": {
+                                        "type": "string",
+                                        "description": "Token status"
+                                    },
+                                    "token_expiring_in": {
+                                        "type": "string",
+                                        "description": "Token expiring in"
+                                    },
+                                    "regdate": {
+                                        "type": "string",
+                                        "description": "Regdate"
+                                    },
+                                    "last_seen": {
+                                        "type": "string",
+                                        "description": "Last seen"
+                                    },
+                                    "login_password": {
+                                        "type": "string",
+                                        "description": "Login password"
+                                    },
+                                    "ref_id": {
+                                        "type": "string",
+                                        "description": "Ref id"
+                                    },
+                                    "user_no": {
+                                        "type": "string",
+                                        "description": "User no"
+                                    },
+                                    "user_pic": {
+                                        "type": "string",
+                                        "description": "User pic"
+                                    },
+                                    "auth_token": {
+                                        "type": "string",
+                                        "description": "Auth token"
+                                    },
+                                    "user_role": {
+                                        "type": "string",
+                                        "description": "User role"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update System Users",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Email"
+                                    },
+                                    "tel": {
+                                        "type": "string",
+                                        "description": "Tel"
+                                    },
+                                    "user_gender": {
+                                        "type": "string",
+                                        "description": "User gender"
+                                    },
+                                    "about": {
+                                        "type": "string",
+                                        "description": "About"
+                                    },
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "Project id"
+                                    },
+                                    "project_name": {
+                                        "type": "string",
+                                        "description": "Project name"
+                                    },
+                                    "token_status": {
+                                        "type": "string",
+                                        "description": "Token status"
+                                    },
+                                    "token_expiring_in": {
+                                        "type": "string",
+                                        "description": "Token expiring in"
+                                    },
+                                    "regdate": {
+                                        "type": "string",
+                                        "description": "Regdate"
+                                    },
+                                    "last_seen": {
+                                        "type": "string",
+                                        "description": "Last seen"
+                                    },
+                                    "login_password": {
+                                        "type": "string",
+                                        "description": "Login password"
+                                    },
+                                    "ref_id": {
+                                        "type": "string",
+                                        "description": "Ref id"
+                                    },
+                                    "user_no": {
+                                        "type": "string",
+                                        "description": "User no"
+                                    },
+                                    "user_pic": {
+                                        "type": "string",
+                                        "description": "User pic"
+                                    },
+                                    "auth_token": {
+                                        "type": "string",
+                                        "description": "Auth token"
+                                    },
+                                    "user_role": {
+                                        "type": "string",
+                                        "description": "User role"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " System Users id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

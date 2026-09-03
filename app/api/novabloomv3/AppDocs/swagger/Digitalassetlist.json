@@ -1,0 +1,145 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Digital Asset List API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/assets/digitalassetlist": {
+            "get": {
+                "summary": "Get Digital Asset List",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Digital Asset List",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "asset_code": {
+                                        "type": "string",
+                                        "description": "Asset code"
+                                    },
+                                    "asset_name": {
+                                        "type": "string",
+                                        "description": "Asset name"
+                                    },
+                                    "asset_type": {
+                                        "type": "string",
+                                        "description": "Asset type"
+                                    },
+                                    "pricing_type": {
+                                        "type": "string",
+                                        "description": "Pricing type"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Status"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Description"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "description": "Logo"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Digital Asset List",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "asset_code": {
+                                        "type": "string",
+                                        "description": "Asset code"
+                                    },
+                                    "asset_name": {
+                                        "type": "string",
+                                        "description": "Asset name"
+                                    },
+                                    "asset_type": {
+                                        "type": "string",
+                                        "description": "Asset type"
+                                    },
+                                    "pricing_type": {
+                                        "type": "string",
+                                        "description": "Pricing type"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Status"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Description"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "description": "Logo"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " Digital Asset List id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

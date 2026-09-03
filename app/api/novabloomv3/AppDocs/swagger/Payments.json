@@ -1,0 +1,169 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Payments API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/payments/payments": {
+            "get": {
+                "summary": "Get Payments",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Payments",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "account_id": {
+                                        "type": "string",
+                                        "description": "Account id"
+                                    },
+                                    "context_id": {
+                                        "type": "string",
+                                        "description": "Context id"
+                                    },
+                                    "amount": {
+                                        "type": "string",
+                                        "description": "Amount"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "description": "Payment method"
+                                    },
+                                    "payment_status": {
+                                        "type": "string",
+                                        "description": "Payment status"
+                                    },
+                                    "external_reference": {
+                                        "type": "string",
+                                        "description": "External reference"
+                                    },
+                                    "payment_context": {
+                                        "type": "string",
+                                        "description": "Payment context"
+                                    },
+                                    "paid_at": {
+                                        "type": "string",
+                                        "description": "Paid at"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "app_id": {
+                                        "type": "string",
+                                        "description": "App id"
+                                    },
+                                    "invoice_id": {
+                                        "type": "string",
+                                        "description": "Invoice id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Payments",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "account_id": {
+                                        "type": "string",
+                                        "description": "Account id"
+                                    },
+                                    "context_id": {
+                                        "type": "string",
+                                        "description": "Context id"
+                                    },
+                                    "amount": {
+                                        "type": "string",
+                                        "description": "Amount"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "description": "Payment method"
+                                    },
+                                    "payment_status": {
+                                        "type": "string",
+                                        "description": "Payment status"
+                                    },
+                                    "external_reference": {
+                                        "type": "string",
+                                        "description": "External reference"
+                                    },
+                                    "payment_context": {
+                                        "type": "string",
+                                        "description": "Payment context"
+                                    },
+                                    "paid_at": {
+                                        "type": "string",
+                                        "description": "Paid at"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "app_id": {
+                                        "type": "string",
+                                        "description": "App id"
+                                    },
+                                    "invoice_id": {
+                                        "type": "string",
+                                        "description": "Invoice id"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " Payments id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

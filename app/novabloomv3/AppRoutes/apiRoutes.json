@@ -1,0 +1,98 @@
+{
+    "smartapi": {
+        "base": "/api/novabloomv3/smartapi"
+    },
+    "dashboard": {
+        "admin": "/api/novabloomv3/dashboard/admin"
+    },
+    "": {
+        "base": "/api/novabloomv3//",
+        "delete": "/api/novabloomv3//delete",
+        "import": "/api/novabloomv3///import"
+    },
+    "platformuserlist": {
+        "base": "/api/novabloomv3/users/platformuserlist",
+        "delete": "/api/novabloomv3/users/delete",
+        "import": "/api/novabloomv3/users/platformuserlist/import"
+    },
+    "activeappusers": {
+        "base": "/api/novabloomv3/users/activeappusers",
+        "delete": "/api/novabloomv3/users/delete",
+        "import": "/api/novabloomv3/users/activeappusers/import"
+    },
+    "subscriptions": {
+        "base": "/api/novabloomv3/subscriptions/subscriptions",
+        "delete": "/api/novabloomv3/subscriptions/delete",
+        "import": "/api/novabloomv3/subscriptions/subscriptions/import"
+    },
+    "payments": {
+        "base": "/api/novabloomv3/payments/payments",
+        "delete": "/api/novabloomv3/payments/delete",
+        "import": "/api/novabloomv3/payments/payments/import"
+    },
+    "invoices": {
+        "base": "/api/novabloomv3/invoices/invoices",
+        "delete": "/api/novabloomv3/invoices/delete",
+        "import": "/api/novabloomv3/invoices/invoices/import"
+    },
+    "selectsubscriptiontoinvoice": {
+        "base": "/api/novabloomv3/subscriptions/selectsubscriptiontoinvoice",
+        "delete": "/api/novabloomv3/subscriptions/delete",
+        "import": "/api/novabloomv3/subscriptions/selectsubscriptiontoinvoice/import"
+    },
+    "digitalassetlist": {
+        "base": "/api/novabloomv3/assets/digitalassetlist",
+        "delete": "/api/novabloomv3/assets/delete",
+        "import": "/api/novabloomv3/assets/digitalassetlist/import"
+    },
+    "assetpricing": {
+        "base": "/api/novabloomv3/asset_pricing/assetpricing",
+        "delete": "/api/novabloomv3/asset_pricing/delete",
+        "import": "/api/novabloomv3/asset_pricing/assetpricing/import"
+    },
+    "inactiveusers": {
+        "base": "/api/novabloomv3/users/inactiveusers",
+        "delete": "/api/novabloomv3/users/delete",
+        "import": "/api/novabloomv3/users/inactiveusers/import"
+    },
+    "sentmessages": {
+        "base": "/api/novabloomv3/messages/sentmessages",
+        "delete": "/api/novabloomv3/messages/delete",
+        "import": "/api/novabloomv3/messages/sentmessages/import"
+    },
+    "manageassetpricing": {
+        "base": "/api/novabloomv3/managepricing/manageassetpricing",
+        "delete": "/api/novabloomv3/managepricing/delete",
+        "import": "/api/novabloomv3/managepricing/manageassetpricing/import"
+    },
+    "systemmodulemanifest": {
+        "base": "/api/novabloomv3/accesscontrol/systemmodulemanifest",
+        "delete": "/api/novabloomv3/accesscontrol/delete",
+        "import": "/api/novabloomv3/accesscontrol/systemmodulemanifest/import"
+    },
+    "apiuserlist": {
+        "base": "/api/novabloomv3/users/apiuserlist",
+        "delete": "/api/novabloomv3/users/delete",
+        "import": "/api/novabloomv3/users/apiuserlist/import"
+    },
+    "orders": {
+        "base": "/api/novabloomv3/orders/orders",
+        "delete": "/api/novabloomv3/orders/delete",
+        "import": "/api/novabloomv3/orders/orders/import"
+    },
+    "systemroles": {
+        "base": "/api/novabloomv3/rolebundles/systemroles",
+        "delete": "/api/novabloomv3/rolebundles/delete",
+        "import": "/api/novabloomv3/rolebundles/systemroles/import"
+    },
+    "userrolefunctions": {
+        "base": "/api/novabloomv3/bundlefunctions/userrolefunctions",
+        "delete": "/api/novabloomv3/bundlefunctions/delete",
+        "import": "/api/novabloomv3/bundlefunctions/userrolefunctions/import"
+    },
+    "systemusers": {
+        "base": "/api/novabloomv3/sysusers/systemusers",
+        "delete": "/api/novabloomv3/sysusers/delete",
+        "import": "/api/novabloomv3/sysusers/systemusers/import"
+    }
+}

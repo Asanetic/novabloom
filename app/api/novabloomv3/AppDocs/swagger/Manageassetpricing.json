@@ -1,0 +1,185 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Manage Asset Pricing API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/managepricing/manageassetpricing": {
+            "get": {
+                "summary": "Get Manage Asset Pricing",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Manage Asset Pricing",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "asset_id": {
+                                        "type": "string",
+                                        "description": "Asset id"
+                                    },
+                                    "model_name": {
+                                        "type": "string",
+                                        "description": "Model name"
+                                    },
+                                    "model_features": {
+                                        "type": "string",
+                                        "description": "Model features"
+                                    },
+                                    "pricing_type": {
+                                        "type": "string",
+                                        "description": "Pricing type"
+                                    },
+                                    "price_model": {
+                                        "type": "string",
+                                        "description": "Price model"
+                                    },
+                                    "amount": {
+                                        "type": "string",
+                                        "description": "Amount"
+                                    },
+                                    "unit_price": {
+                                        "type": "string",
+                                        "description": "Unit price"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "billing_cycle": {
+                                        "type": "string",
+                                        "description": "Billing cycle"
+                                    },
+                                    "effective_from": {
+                                        "type": "string",
+                                        "description": "Effective from"
+                                    },
+                                    "effective_to": {
+                                        "type": "string",
+                                        "description": "Effective to"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Status"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Manage Asset Pricing",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "asset_id": {
+                                        "type": "string",
+                                        "description": "Asset id"
+                                    },
+                                    "model_name": {
+                                        "type": "string",
+                                        "description": "Model name"
+                                    },
+                                    "model_features": {
+                                        "type": "string",
+                                        "description": "Model features"
+                                    },
+                                    "pricing_type": {
+                                        "type": "string",
+                                        "description": "Pricing type"
+                                    },
+                                    "price_model": {
+                                        "type": "string",
+                                        "description": "Price model"
+                                    },
+                                    "amount": {
+                                        "type": "string",
+                                        "description": "Amount"
+                                    },
+                                    "unit_price": {
+                                        "type": "string",
+                                        "description": "Unit price"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "billing_cycle": {
+                                        "type": "string",
+                                        "description": "Billing cycle"
+                                    },
+                                    "effective_from": {
+                                        "type": "string",
+                                        "description": "Effective from"
+                                    },
+                                    "effective_to": {
+                                        "type": "string",
+                                        "description": "Effective to"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Status"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " Manage Asset Pricing id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,158 @@
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// ================= DNA OPTIONS =================
+$dna_file_name="create new nextjs_project";
+$create_dna="yes";
+$overwrite_dna_file="yes";
+// ==============================================
+
+$app_name="driftdoc";
+if(!empty($_POST['function_card'])){
+  $app_name=$_POST['function_card'];
+}
+
+$project_folder="../../".$app_name;
+$zip_name="terminal.zip";
+$zip_url='https://github.com/Asanetic/nextjs_lightpeed/blob/main/next_js_terminal.zip?raw=true';
+$zip_path=$project_folder.'/'.$zip_name;
+
+echo '<a href="'.$project_folder.'/terminal/home" target="_blank">View Folder</a><br>';
+
+if (!file_exists($project_folder)) {
+    if (!mkdir($project_folder, 0777, true)) {
+        die("❌ Failed to create project folder.");
+    }
+}
+
+/* ================= DOWNLOAD ZIP SAFELY ================= */
+
+echo "⬇️ Downloading template...<br>";
+
+$zip_data=@file_get_contents($zip_url);
+
+if ($zip_data === false || strlen($zip_data) < 1000) {
+    die("❌ Failed to download ZIP or file is incomplete.");
+}
+
+ui_write_to_file($zip_path, $zip_data);
+
+clearstatcache();
+if (!file_exists($zip_path) || filesize($zip_path) < 1000) {
+    die("❌ ZIP file missing or corrupted after save.");
+}
+
+echo "✅ Download complete<br>";
+
+/* ================= EXTRACT ZIP ================= */
+
+$zip=new ZipArchive;
+$res=$zip->open($zip_path);
+
+if ($res !== TRUE) {
+    die("❌ Failed to open ZIP archive. Code: ".$res);
+}
+
+if (!$zip->extractTo($project_folder)) {
+    $zip->close();
+    die("❌ Extraction failed. Possible file lock or permission issue.");
+}
+
+$zip->close();
+echo "📦 Extraction complete<br>";
+
+/* ================= MOVE FILES OUT ================= */
+
+$source=$project_folder.'/next_js_terminal';
+$destination=$project_folder;
+
+if (!is_dir($source)) {
+    die("❌ Extracted folder not found: ".$source);
+}
+
+echo "🚚 Moving files...<br>";
+
+$dir=opendir($source);
+
+while(($file=readdir($dir))!==false){
+    if($file=='.'||$file=='..') continue;
+
+    $srcPath=$source.'/'.$file;
+    $destPath=$destination.'/'.$file;
+
+    $moved=false;
+    $attempts=0;
+
+    while(!$moved && $attempts<3){
+        if(@rename($srcPath,$destPath)){
+            $moved=true;
+        } else {
+            // fallback copy
+            if(is_dir($srcPath)){
+                recurse_copy($srcPath,$destPath);
+                if(is_dir($destPath)){
+                    delete_folder($srcPath);
+                    $moved=true;
+                }
+            } else {
+                if(@copy($srcPath,$destPath)){
+                    unlink($srcPath);
+                    $moved=true;
+                }
+            }
+        }
+
+        if(!$moved){
+            $attempts++;
+            usleep(200000); // wait 0.2s
+        }
+    }
+
+    if(!$moved){
+        echo "⚠️ Failed to move: $file <br>";
+    }
+}
+
+closedir($dir);
+@rmdir($source);
+
+echo "✅ Files moved successfully<br>";
+
+/* ================= WRITE BLUEPRINT ================= */
+
+$blueprint_snippet=find_snippet('1168');
+$blueprint_url__=$project_folder.'/appdna/blueprint.php';
+
+Recycle($blueprint_url__);
+ui_write_to_file($blueprint_url__,$blueprint_snippet);
+
+echo "🧬 Blueprint written<br>";
+echo "🎉 Project setup complete!";
+
+/* ================= HELPER FUNCTIONS ================= */
+
+function recurse_copy($src,$dst){
+    $dir=opendir($src);
+    @mkdir($dst);
+    while(($file=readdir($dir))!==false){
+        if($file!='.'&&$file!='..'){
+            if(is_dir($src.'/'.$file)){
+                recurse_copy($src.'/'.$file,$dst.'/'.$file);
+            } else {
+                copy($src.'/'.$file,$dst.'/'.$file);
+            }
+        }
+    }
+    closedir($dir);
+}
+
+function delete_folder($dir){
+    if(!file_exists($dir)) return;
+    foreach(scandir($dir) as $item){
+        if($item=='.'||$item=='..') continue;
+        $path=$dir.'/'.$item;
+        is_dir($path)?delete_folder($path):unlink($path);
+    }
+    rmdir($dir);
+}

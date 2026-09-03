@@ -1,0 +1,77 @@
+
+    <div className={`row justify-content-center p-4 ${styles.wrapper}`}>
+
+      {/* SEARCH BAR */}
+      {showDataControlSections && (<><div className={`${styles.searchBar} mb-4 col-md-12`}>
+      <div className="align-items-center col-md-12">
+      <div className="row g-2 align-items-center col-md-12">
+      <div className="col-md-4 pt-2">
+        {'actionbuttons'}
+      </div>
+
+          <div className="col-md-5">
+                 {showDataControlSections && (<>
+      <div className="col-md-12 row m-0 p-0 justify-content-start  ">
+        <div className="col-md-8 text-left mx-0 px-0"> {'searchisle'} </div>
+        <div className="col-md-4 text-left mx-0 px-0 "> {'refreshisle'} </div>
+      </div></>
+      )}
+          </div>
+
+          <div className="col-md-3 text-right">
+           {'addnewbtn'}
+          </div>
+        </div>
+      </div>
+     </div>
+     </>
+      )}
+      {/* GRID */}
+      <div className="row col-md-12 justify-content-center m-0 p-0">
+          {'csgridstart'}
+          <div key={index} className="col-md-3 mb-4 datarow_card">
+            <div className={styles.card}>
+
+              {/* Rating */}
+              <div className={styles.rating}>
+                {'data9'}
+              </div>
+
+              {/* Favorite */}
+              <div className={styles.favorite}>-</div>
+
+              {/* Avatar */}
+              <div className={styles.avatarWrap}>
+               
+<MosyImageViewer
+                            media={`/api/mediaroom?media=${btoa(({'data2'}))}`}
+                            mediaRoot={""}
+                            defaultLogo={logo.src}
+                            imageClass={styles.avatar}
+                            />
+              </div>
+
+              {/* Info */}
+              <h6 className="fw-semibold mb-1">{'data3'}</h6>
+              <span className={styles.specialty}>{'data4'}</span>
+
+              <div className={styles.address}>
+                 {'data5'}
+              </div>
+
+              {/* Footer */}
+              <div className={styles.footer}>
+              {'rowoptions'}
+                <span className={styles.availability}>{'data6'}</span>
+                <button type="button" className={styles.askBtn}>{'data7'}</button>
+              </div>
+
+            </div>
+          </div>
+        {'csgridend'}
+                <div className="col-md-12  mt-3">
+          {'pagination'}
+        </div>
+      </div>
+
+    </div>

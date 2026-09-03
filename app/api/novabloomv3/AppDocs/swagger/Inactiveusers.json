@@ -1,0 +1,185 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Inactive users API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/users/inactiveusers": {
+            "get": {
+                "summary": "Get Inactive users",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Inactive users",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "description": "First name"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "description": "Last name"
+                                    },
+                                    "full_name": {
+                                        "type": "string",
+                                        "description": "Full name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Email"
+                                    },
+                                    "phone_number": {
+                                        "type": "string",
+                                        "description": "Phone number"
+                                    },
+                                    "account_status": {
+                                        "type": "string",
+                                        "description": "Account status"
+                                    },
+                                    "email_verified": {
+                                        "type": "string",
+                                        "description": "Email verified"
+                                    },
+                                    "phone_verified": {
+                                        "type": "string",
+                                        "description": "Phone verified"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "description": "Country"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    },
+                                    "password_hash": {
+                                        "type": "string",
+                                        "description": "Password hash"
+                                    },
+                                    "profile_photo": {
+                                        "type": "string",
+                                        "description": "Profile photo"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Inactive users",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "description": "First name"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "description": "Last name"
+                                    },
+                                    "full_name": {
+                                        "type": "string",
+                                        "description": "Full name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "description": "Email"
+                                    },
+                                    "phone_number": {
+                                        "type": "string",
+                                        "description": "Phone number"
+                                    },
+                                    "account_status": {
+                                        "type": "string",
+                                        "description": "Account status"
+                                    },
+                                    "email_verified": {
+                                        "type": "string",
+                                        "description": "Email verified"
+                                    },
+                                    "phone_verified": {
+                                        "type": "string",
+                                        "description": "Phone verified"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "description": "Country"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    },
+                                    "password_hash": {
+                                        "type": "string",
+                                        "description": "Password hash"
+                                    },
+                                    "profile_photo": {
+                                        "type": "string",
+                                        "description": "Profile photo"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " Inactive users id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

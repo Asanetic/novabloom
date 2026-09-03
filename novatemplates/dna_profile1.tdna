@@ -1,0 +1,28 @@
+
+      <div className={`col-md-12 p-0 m-0`}>
+      <form {'formisle'}>
+      <div className="row col-md-12 justify-content-center p-0 m-0 ">
+       <div className="col-md-12 mb-2  p-lg-0  border-bottom border_set ">
+        {'navigationisle'}
+       </div>
+        {/* LEFT PROFILE COLUMN */}
+        <div className="col-md-3 mr-lg-3 row justify-content-center mb-4 pt-lg-5 ">
+          <div className={`mt-5 ${styles.avatarWrap}`}>
+            {'imageisle'}           
+           </div>
+        </div>
+
+        {/* RIGHT FORM COLUMN */}
+        <div className="col-md-8 p-lg-0 m-0 ">
+
+          <h4 className="col-md-12 py-4 px-lg-0  ">
+            {'profiletitle'}
+          </h4>
+ 
+          {'inputssection'}
+
+        </div>
+      </div>
+      </form>
+      {'minilistisle'}
+    </div>

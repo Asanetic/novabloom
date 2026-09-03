@@ -1,0 +1,113 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "User Role Functions API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/bundlefunctions/userrolefunctions": {
+            "get": {
+                "summary": "Get User Role Functions",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create User Role Functions",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bundle_id": {
+                                        "type": "string",
+                                        "description": "Bundle id"
+                                    },
+                                    "bundle_name": {
+                                        "type": "string",
+                                        "description": "Bundle name"
+                                    },
+                                    "role_id": {
+                                        "type": "string",
+                                        "description": "Role id"
+                                    },
+                                    "role_name": {
+                                        "type": "string",
+                                        "description": "Role name"
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "description": "Remark"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update User Role Functions",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bundle_id": {
+                                        "type": "string",
+                                        "description": "Bundle id"
+                                    },
+                                    "bundle_name": {
+                                        "type": "string",
+                                        "description": "Bundle name"
+                                    },
+                                    "role_id": {
+                                        "type": "string",
+                                        "description": "Role id"
+                                    },
+                                    "role_name": {
+                                        "type": "string",
+                                        "description": "Role name"
+                                    },
+                                    "remark": {
+                                        "type": "string",
+                                        "description": "Remark"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " User Role Functions id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

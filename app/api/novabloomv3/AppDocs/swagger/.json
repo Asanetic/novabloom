@@ -1,0 +1,129 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": " API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3//": {
+            "get": {
+                "summary": "Get ",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create ",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "string",
+                                        "description": "User id"
+                                    },
+                                    "user_name": {
+                                        "type": "string",
+                                        "description": "User name"
+                                    },
+                                    "role_id": {
+                                        "type": "string",
+                                        "description": "Role id"
+                                    },
+                                    "site_id": {
+                                        "type": "string",
+                                        "description": "Site id"
+                                    },
+                                    "role_name": {
+                                        "type": "string",
+                                        "description": "Role name"
+                                    },
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "Project id"
+                                    },
+                                    "project_name": {
+                                        "type": "string",
+                                        "description": "Project name"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update ",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user_id": {
+                                        "type": "string",
+                                        "description": "User id"
+                                    },
+                                    "user_name": {
+                                        "type": "string",
+                                        "description": "User name"
+                                    },
+                                    "role_id": {
+                                        "type": "string",
+                                        "description": "Role id"
+                                    },
+                                    "site_id": {
+                                        "type": "string",
+                                        "description": "Site id"
+                                    },
+                                    "role_name": {
+                                        "type": "string",
+                                        "description": "Role name"
+                                    },
+                                    "project_id": {
+                                        "type": "string",
+                                        "description": "Project id"
+                                    },
+                                    "project_name": {
+                                        "type": "string",
+                                        "description": "Project name"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": "  id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}

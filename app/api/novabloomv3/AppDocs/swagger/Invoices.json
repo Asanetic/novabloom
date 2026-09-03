@@ -1,0 +1,241 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Invoices API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "api/novabloomv3/invoices/invoices": {
+            "get": {
+                "summary": "Get Invoices",
+                "parameters": [
+                    {
+                        "name": "searchAny",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Base64 search value"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create Invoices",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "invoice_number": {
+                                        "type": "string",
+                                        "description": "Invoice number"
+                                    },
+                                    "account_id": {
+                                        "type": "string",
+                                        "description": "Account id"
+                                    },
+                                    "invoice_remark": {
+                                        "type": "string",
+                                        "description": "Invoice remark"
+                                    },
+                                    "total_amount": {
+                                        "type": "string",
+                                        "description": "Total amount"
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "description": "Issue date"
+                                    },
+                                    "due_date": {
+                                        "type": "string",
+                                        "description": "Due date"
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "description": "Client id"
+                                    },
+                                    "order_id": {
+                                        "type": "string",
+                                        "description": "Order id"
+                                    },
+                                    "asset_id": {
+                                        "type": "string",
+                                        "description": "Asset id"
+                                    },
+                                    "subscription_id": {
+                                        "type": "string",
+                                        "description": "Subscription id"
+                                    },
+                                    "invoice_type": {
+                                        "type": "string",
+                                        "description": "Invoice type"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Status"
+                                    },
+                                    "subtotal_amount": {
+                                        "type": "string",
+                                        "description": "Subtotal amount"
+                                    },
+                                    "tax_amount": {
+                                        "type": "string",
+                                        "description": "Tax amount"
+                                    },
+                                    "discount_amount": {
+                                        "type": "string",
+                                        "description": "Discount amount"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "paid_amount": {
+                                        "type": "string",
+                                        "description": "Paid amount"
+                                    },
+                                    "balance_due": {
+                                        "type": "string",
+                                        "description": "Balance due"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "description": "Notes"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Created successfully"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update Invoices",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "invoice_number": {
+                                        "type": "string",
+                                        "description": "Invoice number"
+                                    },
+                                    "account_id": {
+                                        "type": "string",
+                                        "description": "Account id"
+                                    },
+                                    "invoice_remark": {
+                                        "type": "string",
+                                        "description": "Invoice remark"
+                                    },
+                                    "total_amount": {
+                                        "type": "string",
+                                        "description": "Total amount"
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "description": "Issue date"
+                                    },
+                                    "due_date": {
+                                        "type": "string",
+                                        "description": "Due date"
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "description": "Client id"
+                                    },
+                                    "order_id": {
+                                        "type": "string",
+                                        "description": "Order id"
+                                    },
+                                    "asset_id": {
+                                        "type": "string",
+                                        "description": "Asset id"
+                                    },
+                                    "subscription_id": {
+                                        "type": "string",
+                                        "description": "Subscription id"
+                                    },
+                                    "invoice_type": {
+                                        "type": "string",
+                                        "description": "Invoice type"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "description": "Status"
+                                    },
+                                    "subtotal_amount": {
+                                        "type": "string",
+                                        "description": "Subtotal amount"
+                                    },
+                                    "tax_amount": {
+                                        "type": "string",
+                                        "description": "Tax amount"
+                                    },
+                                    "discount_amount": {
+                                        "type": "string",
+                                        "description": "Discount amount"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "description": "Currency"
+                                    },
+                                    "paid_amount": {
+                                        "type": "string",
+                                        "description": "Paid amount"
+                                    },
+                                    "balance_due": {
+                                        "type": "string",
+                                        "description": "Balance due"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "description": "Notes"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "description": "Created at"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "description": "Updated at"
+                                    },
+                                    "Node": {
+                                        "type": "string",
+                                        "description": " Invoices id to update "
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully"
+                    }
+                }
+            }
+        }
+    }
+}
