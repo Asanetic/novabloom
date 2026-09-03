@@ -656,7 +656,7 @@ export default function OrdersProfile({ dataIn = {}, dataOut = {} }) {
           parentUseEffectKey : localEventSignature,
           showNavigationIsle:false,
           showDataControlSections:false,
-          customQueryStr : context_id='${ordersNode?.record_id}' and payment_context='order',
+          customQueryStr :" context_id='${ordersNode?.record_id}' and payment_context='order'",
           customProfilePath:"../payments/profile"
           
         }}
