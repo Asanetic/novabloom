@@ -5,7 +5,6 @@ import fs from 'fs';
 
 export async function mosySecureSelect({
   table,
-  recordIdColumn=`record_id`,
   dictionary = {},
   searchParams = new URLSearchParams(),   //default
   authData,
@@ -229,12 +228,9 @@ if (!searchParams || !(searchParams instanceof URLSearchParams)) {
       totalRecords = countRows[0]?.total || 0;
     }
 
-
-    const safePageSize = Math.max(Number(pageSize) || 20, 1);
-    
-    const pageCount = Math.max(Math.ceil(totalRecords / safePageSize), 1);
-    const safePageNo = Math.min(Math.max(Number(pageNo) || 1, 1), pageCount);
-    const offset = (safePageNo - 1) * safePageSize;
+    const pageCount = Math.max(Math.ceil(totalRecords / pageSize), 1);
+    const safePageNo = Math.min(pageNo, pageCount);
+    const offset = (safePageNo - 1) * pageSize;
 
     // =============================
     // 9️⃣ DATA QUERY
@@ -245,14 +241,15 @@ if (!searchParams || !(searchParams instanceof URLSearchParams)) {
       ${whereClause}
       ${groupByClause}
       ${orderClause}
-      LIMIT ${offset}, ${safePageSize}
+      LIMIT ?, ?
     `;
 
-    console.log("dataSql", dataSql, values);
+    const queryValues = [...values, offset, pageSize];
 
-    const [rows] = await conn.execute(dataSql, values);
+    console.log("dataSql", dataSql, queryValues);
 
-        
+    const [rows] = await conn.execute(dataSql,queryValues);
+
       // add row_count first
       const rowsWithCount = rows.map((row, index) => ({
         row_count: offset + index + 1,
@@ -267,8 +264,7 @@ if (!searchParams || !(searchParams instanceof URLSearchParams)) {
         batchMutations,
         rows: rowsWithCount,
         authData,
-        conn,
-        recordIdColumn
+        conn 
       });
     }
 
@@ -296,39 +292,24 @@ if (!searchParams || !(searchParams instanceof URLSearchParams)) {
 
 export async function mosySqlInsert(tbl, fieldsAndValuesJson, formBody, prefix="") {
   const conn = await connectDB();
+  
   let magicColumns = [];
   let magicValues = [];
-  
-  let hive_site_id = null;
-  let hive_site_name = null;
-  
+
   for (let key in fieldsAndValuesJson) {
     const value = fieldsAndValuesJson[key];
-  
-    let finalValue = null;
-  
+    
     if (value === "?") {
       const formKey = `${prefix}${key}`;
       const formValue = formBody[formKey];
-  
+
       if (formValue !== undefined) {
         magicColumns.push(`\`${key}\``);
         magicValues.push(formValue);
-        finalValue = formValue;
       }
     } else {
       magicColumns.push(`\`${key}\``);
       magicValues.push(value);
-      finalValue = value;
-    }
-  
-    //AUTO-CAPTURE HIVE VALUES
-    if (key === "hive_site_id") {
-      hive_site_id = finalValue;
-    }
-  
-    if (key === "hive_site_name") {
-      hive_site_name = finalValue;
     }
   }
 
@@ -336,13 +317,12 @@ export async function mosySqlInsert(tbl, fieldsAndValuesJson, formBody, prefix="
   const placeholders = magicValues.map(() => '?').join(", ");
   const query = `INSERT INTO \`${activeDB}\`.\`${tbl}\` (${preparedCols}) VALUES (${placeholders})`;
 
-  //console.log(query, magicValues, tbl, fieldsAndValuesJson, formBody);
+  console.log(query, magicValues, tbl, fieldsAndValuesJson, formBody);
 
   try {
     const [result] = await conn.execute(query, magicValues);
 
-    return { message: 'Record added successfully', record_id: result.insertId };
-
+    return { message: 'Data inserted successfully', record_id: result.insertId };
   } catch (err) {
     throw new Error(`Insert failed: ${err.message}`);
   } finally {
@@ -359,12 +339,9 @@ export async function mosySqlUpdate(tbl, fieldsAndValuesJson, formBody, whereStr
 
   let updatePairs = [];
   let magicValues = [];
-  let hive_site_id = null;
-  let hive_site_name = null;
 
   for (let key in fieldsAndValuesJson) {
     const value = fieldsAndValuesJson[key];
-    let finalValue = null;
 
     if (value === "?") {
       const formKey = `${prefix}${key}`;
@@ -373,25 +350,11 @@ export async function mosySqlUpdate(tbl, fieldsAndValuesJson, formBody, whereStr
       if (formValue !== undefined) {
         updatePairs.push(`\`${key}\` = ?`);
         magicValues.push(formValue);
-        finalValue = formValue;
-
       }
     } else {
       updatePairs.push(`\`${key}\` = ?`);
       magicValues.push(value);
-      finalValue = value;
-
     }
-
-      //AUTO-CAPTURE HIVE VALUES
-      if (key === "hive_site_id") {
-        hive_site_id = finalValue;
-      }
-
-      if (key === "hive_site_name") {
-        hive_site_name = finalValue;
-      }
-
   }
 
   const updateStr = updatePairs.join(", ");
@@ -399,20 +362,13 @@ export async function mosySqlUpdate(tbl, fieldsAndValuesJson, formBody, whereStr
 
   const query = `UPDATE \`${activeDB}\`.\`${tbl}\` SET ${updateStr} ${whereClause}`;
 
-  //console.log(`update queriiieee ${query}`)
+  console.log(`update queriiieee ${query}`)
 
   try {
-
-    await mosySafeAuditLog({
-      table_name: tbl,
-      where_str: whereStr,
-      roll_type: "UPDATE"
-    });
-
     const [result] = await conn.execute(query, magicValues);
 
     return {
-      message: 'Record updated successfully',
+      message: 'Data updated successfully',
       affectedRows: result.affectedRows,
     };
   } catch (err) {
@@ -595,7 +551,7 @@ export async function mosyFlexSelect(queryParams = {}, mutations = {}, mutationC
 
   //console.log("mosyFlexSelect mutationClass keys:", Object.keys(mutationClass));
   //console.log("mosyFlexSelect functionCols keys:", Object.keys(mutations));  
-  //console.log("mosyFlexSelect where str keys:", decodedWhereStr);  
+  console.log("mosyFlexSelect where str keys:", decodedWhereStr);  
   
   // Handle pagination
   if (pagination && pagination.includes(':')) {
@@ -695,17 +651,8 @@ export async function mosyFlexQuickSel(table, cols="*", whereStr = '', returnTyp
 
 export async function mosySqlDelete(table, whereStr) {
   try {
-    
     const conn = await connectDB();
     const sql = `DELETE FROM \`${activeDB}\`.\`${table}\` ${whereStr}`;
-      
-    // fire-and-forget
-      await mosySafeAuditLog({
-        table_name: table,
-        where_str: `${whereStr}`,
-        roll_type: "DELETE"
-      });
-
     const [result] = await conn.execute(sql);
     return { status: 'success', affectedRows: result.affectedRows };
   } catch (error) {
@@ -713,6 +660,7 @@ export async function mosySqlDelete(table, whereStr) {
     return { status: 'error', message: error.message };
   }
 }
+
 
 
 export function mmres(str) {
@@ -839,18 +787,16 @@ export function mosyRightNow() {
 }
 
 //==================================================== new secure row enrichment
-
 export async function mosySecureSum({
   key,
   config,
   rows,
   enrichedMap,
   authData,
-  conn,
-  recordIdColumn
+  conn
 }) {
 
-  //console.log(`💰 mosySecureSum START: ${key}`);
+  console.log(`💰 mosySecureSum START: ${key}`);
 
   if (!Array.isArray(rows) || rows.length === 0) {
     console.warn("⚠️ mosySecureSum: No rows supplied.");
@@ -879,16 +825,15 @@ export async function mosySecureSum({
     )
   ];
 
-  ///console.log("🔎 Extracted parentValues:", parentValues);
+  console.log("🔎 Extracted parentValues:", parentValues);
 
   if (parentValues.length === 0) {
 
-    //console.warn(`⚠️ No valid parent values for ${parentColumn}`);
+    console.warn(`⚠️ No valid parent values for ${parentColumn}`);
 
     // Normalize all parents to 0
     for (const row of rows) {
-      
-      const parentRecordId = row[recordIdColumn];
+      const parentRecordId = row.record_id;
       if (!enrichedMap[parentRecordId])
         enrichedMap[parentRecordId] = {};
       enrichedMap[parentRecordId][key] = 0;
@@ -939,9 +884,9 @@ export async function mosySecureSum({
 
   const placeholderCount = (sql.match(/\?/g) || []).length;
 
-  //console.log("🧾 SQL:", sql.trim());
-  //console.log("📊 Placeholder count:", placeholderCount);
-  //console.log("📊 Values count:", values.length);
+  console.log("🧾 SQL:", sql.trim());
+  console.log("📊 Placeholder count:", placeholderCount);
+  console.log("📊 Values count:", values.length);
 
   if (placeholderCount !== values.length) {
     console.error("❌ mosySecureSum: Placeholder mismatch");
@@ -959,7 +904,7 @@ export async function mosySecureSum({
       conn
     });
 
-    //console.log(`✅ mosySecureSum fetched ${results.length} rows`);
+    console.log(`✅ mosySecureSum fetched ${results.length} rows`);
   }
   catch (err) {
     console.error("❌ mosySecureSum DB error:", err);
@@ -974,7 +919,7 @@ export async function mosySecureSum({
   // Attach back to enrichedMap
   for (const row of rows) {
 
-    const parentRecordId = row[recordIdColumn];
+    const parentRecordId = row.record_id;
     const lookupValue    = row[parentColumn];
 
     if (!enrichedMap[parentRecordId])
@@ -984,8 +929,10 @@ export async function mosySecureSum({
       resultMap[lookupValue] ?? 0;
   }
 
- // console.log(`💰 mosySecureSum END: ${key}`);
+  console.log(`💰 mosySecureSum END: ${key}`);
 }
+
+
 
 export async function mosySecureMini({
   key,
@@ -993,8 +940,7 @@ export async function mosySecureMini({
   rows,
   enrichedMap,
   authData,
-  conn,
-  recordIdColumn
+  conn
 }) {
 
   if (!rows || rows.length === 0) {
@@ -1015,7 +961,7 @@ export async function mosySecureMini({
 
   const [childColumn, parentColumn] = linkParts;
 
-  //  Extract parent values dynamically
+  // 🔥 Extract parent values dynamically
   const parentValues = [
     ...new Set(
       rows
@@ -1110,7 +1056,7 @@ export async function mosySecureMini({
   // Attach back to enrichedMap
   for (const parentRow of rows) {
 
-    const parentRecordId = parentRow[recordIdColumn];
+    const parentRecordId = parentRow.record_id;
     const lookupValue    = parentRow[parentColumn];
 
     if (!enrichedMap[parentRecordId])
@@ -1128,11 +1074,10 @@ export async function mosySecureJoin({
   parentRows,
   enrichedMap,
   authData,
-  conn,
-  recordIdColumn
+  conn
 }) {
 
-  //console.log("🧩 mosySecureJoin START:", key);
+  console.log("🧩 mosySecureJoin START:", key);
 
   if (!parentRows || parentRows.length === 0) {
     console.log("⚠️ No parentRows supplied.");
@@ -1153,11 +1098,11 @@ export async function mosySecureJoin({
   const parentColumn = linkParts[0];
   const childColumn  = linkParts[1];
 
-  // console.log("🔗 Join Mapping:", {
-  //   parentColumn,
-  //   childColumn,
-  //   table: config.table
-  // });
+  console.log("🔗 Join Mapping:", {
+    parentColumn,
+    childColumn,
+    table: config.table
+  });
 
   // Extract values from parent rows
   const parentValues = [
@@ -1168,7 +1113,7 @@ export async function mosySecureJoin({
     )
   ];
 
-  //console.log("📦 Extracted parentValues:", parentValues);
+  console.log("📦 Extracted parentValues:", parentValues);
 
   if (parentValues.length === 0) {
     console.warn("⚠️ No valid parent values found for column:", parentColumn);
@@ -1206,10 +1151,10 @@ export async function mosySecureJoin({
 
   const placeholderCount = (sql.match(/\?/g) || []).length;
 
-  //console.log("🧾 SQL Preview:", sql.trim());
-  //console.log("🧮 Placeholder Count:", placeholderCount);
-  //console.log("📊 Values Count:", values.length);
-  //console.log("📊 Values:", values);
+  console.log("🧾 SQL Preview:", sql.trim());
+  console.log("🧮 Placeholder Count:", placeholderCount);
+  console.log("📊 Values Count:", values.length);
+  console.log("📊 Values:", values);
 
   if (placeholderCount !== values.length) {
     console.error("❌ Placeholder mismatch detected!");
@@ -1225,7 +1170,7 @@ export async function mosySecureJoin({
       conn
     });
 
-    //console.log(`✅ Join fetched ${results.length} rows`);
+    console.log(`✅ Join fetched ${results.length} rows`);
   }
   catch (err) {
     console.error("❌ mosyBatchSelect failed:", err);
@@ -1243,7 +1188,7 @@ export async function mosySecureJoin({
   // Map back to enrichedMap
   for (const parentRow of parentRows) {
 
-    const parentRecordId = parentRow[recordIdColumn];
+    const parentRecordId = parentRow.record_id;
     const lookupValue    = parentRow[parentColumn];
 
     if (!enrichedMap[parentRecordId])
@@ -1257,21 +1202,21 @@ export async function mosySecureJoin({
     }
   }
 
- // console.log("🧩 mosySecureJoin END:", key);
+  console.log("🧩 mosySecureJoin END:", key);
 }
+
 
 
 export function mosySecureCompute({
   key,
   config,
   rows,
-  enrichedMap,
-  recordIdColumn
+  enrichedMap
 }) {
 
   for (const row of rows) {
 
-    const recordId = row[recordIdColumn];
+    const recordId = row.record_id;
 
     const context = {
       ...row,
@@ -1309,11 +1254,10 @@ export async function mosySecureCount({
   rows,
   enrichedMap,
   authData,
-  conn,
-  recordIdColumn
+  conn
 }) {
 
-  //console.log(`🧮 mosySecureCount START: ${key}`, rows);
+  console.log(`🧮 mosySecureCount START: ${key}`, rows);
 
   if (!Array.isArray(rows) || rows.length === 0) {
     console.warn("⚠️ mosySecureCount: No rows supplied.");
@@ -1354,7 +1298,7 @@ export async function mosySecureCount({
 
     // Still normalize output to 0
     for (const row of rows) {
-      const parentRecordId = row[recordIdColumn];
+      const parentRecordId = row.record_id;
       if (!enrichedMap[parentRecordId])
         enrichedMap[parentRecordId] = {};
       enrichedMap[parentRecordId][key] = 0;
@@ -1440,7 +1384,7 @@ export async function mosySecureCount({
   // Attach results back to parent rows
   for (const row of rows) {
 
-    const parentRecordId = row[recordIdColumn];
+    const parentRecordId = row.record_id;
     const lookupValue    = row[parentColumn];
 
     if (!enrichedMap[parentRecordId])
@@ -1453,309 +1397,16 @@ export async function mosySecureCount({
   console.log(`🧮 mosySecureCount END: ${key}`);
 }
 
-export async function mosySecureCountFlags({
-  key,
-  config,
-  rows,
-  enrichedMap,
-  authData,
-  conn,
-  recordIdColumn
-}) {
 
-  /*
-  |--------------------------------------------------------------------------
-  | Validate
-  |--------------------------------------------------------------------------
-  */
-
-  if (!Array.isArray(rows) || rows.length === 0) {
-    return;
-  }
-
-
-  if (
-    !config?.table ||
-    !config?.link ||
-    !Array.isArray(config?.columns) ||
-    config.columns.length === 0
-  ) {
-
-    console.error(
-      "mosySecureCountFlags: Invalid config",
-      config
-    );
-
-    return;
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Link
-  |--------------------------------------------------------------------------
-  |
-  | Example:
-  |
-  | role_id:record_id
-  |
-  | childColumn  = role_id
-  | parentColumn = record_id
-  |
-  */
-
-  const linkParts =
-    config.link.split(":");
-
-
-  if (linkParts.length !== 2) {
-
-    console.error(
-      "mosySecureCountFlags: Invalid link",
-      config.link
-    );
-
-    return;
-
-  }
-
-
-  const [
-    childColumn,
-    parentColumn
-  ] = linkParts;
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Parent values
-  |--------------------------------------------------------------------------
-  */
-
-  const parentValues = [
-
-    ...new Set(
-
-      rows
-        .map(
-          row =>
-            row?.[parentColumn]
-        )
-        .filter(
-          value =>
-            value !== undefined &&
-            value !== null &&
-            value !== ""
-        )
-
-    )
-
-  ];
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Default everything to zero
-  |--------------------------------------------------------------------------
-  */
-
-  if (parentValues.length === 0) {
-
-    for (const row of rows) {
-
-      const parentRecordId =
-        row[recordIdColumn];
-
-
-      if (!enrichedMap[parentRecordId]) {
-
-        enrichedMap[parentRecordId] = {};
-
-      }
-
-
-      enrichedMap[parentRecordId][key] = 0;
-
-    }
-
-
-    return;
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Build placeholders
-  |--------------------------------------------------------------------------
-  */
-
-  const placeholders =
-    parentValues
-      .map(() => "?")
-      .join(",");
-
-
-  const whereParts = [
-
-    `\`${childColumn}\` IN (${placeholders})`
-
-  ];
-
-
-  const values = [
-    ...parentValues
-  ];
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Tenant enforcement
-  |--------------------------------------------------------------------------
-  */
-
-  if (authData?.hive_site_id) {
-
-    whereParts.push(
-      "`hive_site_id` = ?"
-    );
-
-
-    values.push(
-      authData.hive_site_id
-    );
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Build permission expression
-  |--------------------------------------------------------------------------
-  |
-  | Generates:
-  |
-  | COALESCE(can_view,0)
-  | + COALESCE(can_add,0)
-  | + COALESCE(can_edit,0)
-  | ...
-  |
-  */
-
-  const permissionExpression =
-    config.columns
-      .map(
-        column =>
-          `COALESCE(\`${column}\`, 0)`
-      )
-      .join(" + ");
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Query
-  |--------------------------------------------------------------------------
-  |
-  | SUM() adds the enabled flags across ALL module rows belonging
-  | to the role.
-  |
-  */
-
-  const sql = `
-
-    SELECT
-
-      \`${childColumn}\` AS ref_id,
-
-      SUM(
-        ${permissionExpression}
-      ) AS total
-
-    FROM
-      \`${activeDB}\`.\`${config.table}\`
-
-    WHERE
-      ${whereParts.join(" AND ")}
-
-    GROUP BY
-      \`${childColumn}\`
-
-  `;
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Execute
-  |--------------------------------------------------------------------------
-  */
-
-  const results =
-    await mosyBatchSelect({
-      sql,
-      values,
-      conn
-    });
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Lookup map
-  |--------------------------------------------------------------------------
-  */
-
-  const resultMap = {};
-
-
-  for (const result of results) {
-
-    resultMap[
-      result.ref_id
-    ] =
-      Number(result.total) || 0;
-
-  }
-
-
-  /*
-  |--------------------------------------------------------------------------
-  | Attach to parent rows
-  |--------------------------------------------------------------------------
-  */
-
-  for (const row of rows) {
-
-    const parentRecordId =
-      row[recordIdColumn];
-
-
-    const lookupValue =
-      row[parentColumn];
-
-
-    if (!enrichedMap[parentRecordId]) {
-
-      enrichedMap[parentRecordId] = {};
-
-    }
-
-
-    enrichedMap[parentRecordId][key] =
-      resultMap[lookupValue] ?? 0;
-
-  }
-
-}
 
 export async function mosyEnrichFinalResponse({
   batchMutations,
   rows,
   authData,
-  conn,
-  recordIdColumn
+  conn
 }) {
 
- // console.log(`🧩 batchMutations keys: recordIdColumn  ${recordIdColumn}`, Object.keys(batchMutations));
+  console.log("🧩 batchMutations keys:", Object.keys(batchMutations));
 
   if (!batchMutations || rows.length === 0)
     return rows;
@@ -1763,7 +1414,6 @@ export async function mosyEnrichFinalResponse({
   const enrichedMap = {};
 
   for (const key of Object.keys(batchMutations)) {
-    //console.log("🧩 const key of Object.keys(batchMutations)  keys:", batchMutations, "rowss... ", rows);
 
     const config = batchMutations[key];
 
@@ -1776,8 +1426,7 @@ export async function mosyEnrichFinalResponse({
           rows,
           enrichedMap,
           authData,
-          conn,
-          recordIdColumn
+          conn
         });
         break;
 
@@ -1788,8 +1437,7 @@ export async function mosyEnrichFinalResponse({
           rows,
           enrichedMap,
           authData,
-          conn,
-          recordIdColumn
+          conn
         });
         break;
 
@@ -1798,8 +1446,7 @@ export async function mosyEnrichFinalResponse({
           key,
           config,
           rows,
-          enrichedMap,
-          recordIdColumn
+          enrichedMap
         });
         break;
 
@@ -1810,21 +1457,8 @@ export async function mosyEnrichFinalResponse({
           rows,
           enrichedMap,
           authData,
-          conn,
-          recordIdColumn
+          conn
         });
-        break;
-
-      case "count_flags":
-        await mosySecureCountFlags({
-          key,
-          config,
-          rows,
-          enrichedMap,
-          authData,
-          conn,
-          recordIdColumn
-        });      
         break;
 
       case "join":
@@ -1834,8 +1468,7 @@ export async function mosyEnrichFinalResponse({
           parentRows:rows,
           enrichedMap,
           authData,
-          conn,
-          recordIdColumn
+          conn
         });
         break;
 
@@ -1844,15 +1477,12 @@ export async function mosyEnrichFinalResponse({
     }
   }
 
-  return rows.map(function(row) 
-  {
-    return {
-      ...row,
-      ...(enrichedMap[row[recordIdColumn]] || {})
-    };
-  });
-
+  return rows.map(row => ({
+    ...row,
+    ...(enrichedMap[row.record_id] || {})
+  }));
 }
+
 
 export async function mosyBatchSelect({
   sql,
@@ -1866,95 +1496,7 @@ export async function mosyBatchSelect({
 
   const [rows] = await conn.execute(sql, values);
 
- // console.log(`✅ mosyBatchSelect: ${sql} ${rows.length} rows fetched`, rows, values);
+  console.log(`✅ mosyBatchSelect: ${sql} ${rows.length} rows fetched`, rows, values);
   
   return rows;
-}
-
-
-export function processImport(csvData, colsArray) {
-  if (!Array.isArray(csvData) || csvData.length === 0) return [];
-  if (!Array.isArray(colsArray) || colsArray.length === 0) return [];
-
-  return csvData.map((row) => {
-    const record = {};
-    colsArray.forEach((col) => {
-      record[col] = row[col] ?? "";
-    });
-
-    return record;
-
-  });
-}
-
-export async function mosySafeAuditLog({
-  table_name,
-  where_str,
-  roll_type 
-}) {
-  const conn = await connectDB();
-
-  try {
-    let rows = [];
-
-    let hive_site_id = null;
-    let hive_site_name = null;
-    let whereStrOperation ="WHERE"
-    if(roll_type=="DELETE"){
-      whereStrOperation=''
-    }
-    // Fetch OLD data
-    if (roll_type === "UPDATE" || roll_type === "DELETE") {
-      const query = `SELECT * FROM ${table_name} ${whereStrOperation} ${where_str}`;
-      const [result] = await conn.query(query);
-      rows = result;
-
-      // AUTO-EXTRACT HIVE FROM DATA
-      if (rows.length > 0) {
-        const firstRow = rows[0];
-
-        if ("hive_site_id" in firstRow) {
-          hive_site_id = firstRow.hive_site_id ?? null;
-        }
-
-        if ("hive_site_name" in firstRow) {
-          hive_site_name = firstRow.hive_site_name ?? null;
-        }
-      }
-    }
-
-    // Unique rollback key
-    const roll_bk_key = `rbk_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    const roll_timestamp = new Date();
-
-    // Insert audit
-    const insertQuery = `
-      INSERT INTO mosy_sql_roll_back 
-      (roll_bk_key, table_name, roll_type, where_str, roll_timestamp, value_entries, hive_site_id, hive_site_name)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
-    await conn.execute(insertQuery, [
-      roll_bk_key,
-      table_name,
-      roll_type,
-      where_str,
-      roll_timestamp,
-      JSON.stringify(rows),
-      hive_site_id,
-      hive_site_name
-    ]);
-
-    return {
-      success: true,
-      roll_bk_key,
-      affected_rows: rows.length
-    };
-
-  } catch (err) {
-    console.error("Audit Log Error:", err);
-    return { success: false, error: err.message };
-  } finally {
-    conn.end(); // if using pool
-  }
 }
