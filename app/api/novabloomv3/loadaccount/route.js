@@ -159,6 +159,7 @@ export async function POST(AccountRequest) {
       await mosySqlInsert('app_users', newUserData, {});
       user = await mosyQddata('app_users', 'record_id', safeAccountId);
       isNewRegistration = true;
+      
     }
 
     const existingSubscription = await mosyQuickSel(
