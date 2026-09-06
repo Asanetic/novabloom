@@ -128,6 +128,10 @@ export async function POST(AccountRequest) {
     const safeAccountId = mmres(String(accountid));
     const safeAssetId = mmres(String(assetid));
 
+    const asset = await mosyQddata('assets', 'record_id', safeAssetId);
+    const hiveSiteId = asset?.hive_site_id || '';
+    const hiveSiteName = asset?.hive_site_name || '';
+
     let user = await mosyQddata('app_users', 'record_id', safeAccountId);
     let isNewRegistration = false;
 
@@ -147,7 +151,9 @@ export async function POST(AccountRequest) {
         country: '',
         currency: '',
         created_at: now,
-        updated_at: now
+        updated_at: now,
+        hive_site_id: hiveSiteId,
+        hive_site_name: hiveSiteName
       };
 
       await mosySqlInsert('app_users', newUserData, {});
@@ -214,7 +220,9 @@ export async function POST(AccountRequest) {
       amount: trialPackage.amount ?? 0,
       currency: trialPackage.currency || '',
       created_at: now,
-      updated_at: now
+      updated_at: now,
+      hive_site_id: hiveSiteId,
+      hive_site_name: hiveSiteName
     };
 
     await mosySqlInsert('subscriptions', newSubscription, {});
