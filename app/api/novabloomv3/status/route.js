@@ -1,7 +1,7 @@
 import {
     mmres,
     mosyQuickSel
-  } from '../../../apiUtils/dataControl/dataUtils';
+  } from '../../apiUtils/dataControl/dataUtils';
   
   // ─────────────────────────────────────────────────────────────
   // POLICY CONSTANTS — these are business decisions, not technical
