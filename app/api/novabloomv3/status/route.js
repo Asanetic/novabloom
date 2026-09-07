@@ -9,8 +9,8 @@ import {
 // ─────────────────────────────────────────────────────────────
 
 // Days past next_billing_date before a lapsed subscription moves from
-// a soft "restrictions" state to a full "/paused" block. Set to 0 for
-// instant hard block with no grace at all.
+// active to a full "/paused" block. Set to 0 for instant hard block
+// with no grace at all.
 const GRACE_PERIOD_DAYS = 0;
 
 // Where the hosted takeover pages live. Same host that will serve
@@ -36,6 +36,11 @@ function buildUrls(assetId, accountId) {
   };
 }
 
+// This endpoint's entire job: say whether the account is blocked, and
+// hand back the three URLs (paused UI, payment flow, public note).
+// What any given app DOES with block/pay_url/expired_url/usernoteurl —
+// which button to swap, whether to show a notice, whether to keep its
+// shell up — is entirely up to that app. Not this endpoint's concern.
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -71,9 +76,9 @@ export async function GET(request) {
       return Response.json({
         block: true,
         state: 'not_found',
-        restrictions: {},
         expired_url: pausedUrl,
-        usernoteurl: userNoteUrl
+        usernoteurl: userNoteUrl,
+        pay_url: payUrl
       });
     }
 
@@ -84,9 +89,9 @@ export async function GET(request) {
       return Response.json({
         block: true,
         state: 'cancelled',
-        restrictions: {},
         expired_url: pausedUrl,
-        usernoteurl: userNoteUrl
+        usernoteurl: userNoteUrl,
+        pay_url: payUrl
       });
     }
 
@@ -101,28 +106,16 @@ export async function GET(request) {
       return Response.json({
         block: false,
         state: 'active',
-        restrictions: {}
+        pay_url: payUrl
       });
     }
 
-    // Overdue but within grace window — soft gate only.
+    // Overdue but within grace window.
     if (overdueDays <= GRACE_PERIOD_DAYS) {
       return Response.json({
         block: false,
         state: 'grace',
-        restrictions: {
-          // Generic "add" key restricted for now. Extend this object
-          // per action key as client apps (Rack POS, AssetGuard, etc.)
-          // confirm which of their buttons should be soft-gated during
-          // grace — this is a placeholder for the one case discussed
-          // so far ("Add New" -> "Upgrade Account").
-          add: {
-            label: 'Upgrade Account',
-            icon: 'arrow-up',
-            variant: 'warning',
-            action_url: payUrl
-          }
-        }
+        pay_url: payUrl
       });
     }
 
@@ -130,9 +123,9 @@ export async function GET(request) {
     return Response.json({
       block: true,
       state: 'expired',
-      restrictions: {},
       expired_url: pausedUrl,
-      usernoteurl: userNoteUrl
+      usernoteurl: userNoteUrl,
+      pay_url: payUrl
     });
   } catch (err) {
     console.error('status GET failed:', err);

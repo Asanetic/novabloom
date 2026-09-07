@@ -29,7 +29,7 @@ const NOTE_HTML = `<!doctype html>
 <meta name="robots" content="noindex, nofollow" />
 <title>Content Unavailable</title>
 <style>
-  :root { color-scheme: light dark; }
+  :root { color-scheme: light; }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
@@ -39,7 +39,7 @@ const NOTE_HTML = `<!doctype html>
     min-height: 100vh;
     padding: 24px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #f5f6f8;
+    background: #fffdf9;
     color: #1c1f24;
   }
   .note_card {
@@ -48,7 +48,7 @@ const NOTE_HTML = `<!doctype html>
     text-align: center;
     padding: 40px 32px;
     border-radius: 16px;
-    background: #fff;
+    background: #fffdf9;
     box-shadow: 0 12px 32px rgba(15, 18, 24, 0.08);
   }
   .note_icon {
@@ -56,7 +56,7 @@ const NOTE_HTML = `<!doctype html>
     height: 52px;
     margin: 0 auto 20px;
     border-radius: 50%;
-    background: #eef0f3;
+    background: #f3f0e9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,12 +74,6 @@ const NOTE_HTML = `<!doctype html>
     color: #5a6069;
     margin: 0;
   }
-  @media (prefers-color-scheme: dark) {
-    body { background: #0f1216; color: #e7e9ec; }
-    .note_card { background: #1a1d22; box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
-    .note_icon { background: #22262c; }
-    .note_subtext { color: #9aa0a8; }
-  }
 </style>
 </head>
 <body>
@@ -92,7 +86,7 @@ const NOTE_HTML = `<!doctype html>
       </svg>
     </div>
     <p class="note_headline">This page isn&rsquo;t available right now</p>
-    <p class="note_subtext">We&rsquo;re working on it. Please check back again soon.</p>
+    <p class="note_subtext">Please check back again soon.</p>
   </div>
 </body>
 </html>
