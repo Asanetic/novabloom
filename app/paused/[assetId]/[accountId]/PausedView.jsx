@@ -61,12 +61,12 @@ export default function PausedView({ assetId, accountId, snapshot }) {
     );
   }
 
-  const { subscription, state } = snapshot;
+  const { subscription, state, asset } = snapshot;
   const copy = COPY[state] || COPY.expired;
 
   if (paid) {
     return (
-      <BillingCard>
+      <BillingCard asset={asset}>
         <span className="billing_badge_soft">All set</span>
         <div className="billing_headline">You&apos;re back up and running</div>
         <div className="billing_subtext">Payment received — this account has been renewed. You can close this window now.</div>
@@ -75,7 +75,7 @@ export default function PausedView({ assetId, accountId, snapshot }) {
   }
 
   return (
-    <BillingCard>
+    <BillingCard asset={asset}>
       <span className={`billing_badge_soft ${copy.badgeClass}`}>{copy.badge}</span>
       <div className="billing_headline">{copy.headline}</div>
       <div className="billing_subtext">{copy.subtext}</div>

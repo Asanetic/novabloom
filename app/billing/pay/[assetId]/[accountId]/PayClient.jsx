@@ -113,7 +113,7 @@ export default function PayClient({ assetId, accountId, snapshot, embedded = fal
     );
   }
 
-  const { subscription } = snapshot;
+  const { subscription, asset } = snapshot;
   const targetAmount = toNumber(subscription.amount);
   const maxChecks = Math.floor(PAYMENT_CHECK_TIMEOUT_MS / PAYMENT_CHECK_INTERVAL_MS);
   const progressPct = step === 'waiting' ? Math.min(100, Math.round((checkNo / maxChecks) * 100)) : 0;
@@ -203,7 +203,7 @@ export default function PayClient({ assetId, accountId, snapshot, embedded = fal
 
   if (step === 'success') {
     return (
-      <BillingCard embedded={embedded}>
+      <BillingCard embedded={embedded} asset={asset}>
         <span className="billing_badge_soft">Payment confirmed</span>
         <div className="billing_headline">You&apos;re all set</div>
         <div className="billing_subtext">
@@ -214,7 +214,7 @@ export default function PayClient({ assetId, accountId, snapshot, embedded = fal
   }
 
   return (
-    <BillingCard embedded={embedded}>
+    <BillingCard embedded={embedded} asset={asset}>
       <div className="billing_headline">Renew {subscription.subscription_name || 'Subscription'}</div>
       <div className="billing_subtext">Pay securely with M-Pesa to restore access instantly.</div>
       <div className="billing_amount">{subscription.currency} {subscription.amount}</div>

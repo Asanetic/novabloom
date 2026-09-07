@@ -44,6 +44,21 @@ export function BillingStyles() {
         margin-bottom: 18px;
       }
 
+      .billing_asset_brand {
+        margin: -8px 0 18px;
+      }
+
+      .billing_asset_name {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .billing_asset_desc {
+        font-size: 12.5px;
+        opacity: 0.6;
+        margin-top: 2px;
+      }
+
       .billing_headline {
         font-size: 20px;
         font-weight: 700;
@@ -292,7 +307,7 @@ export function BillingStyles() {
   );
 }
 
-export function BillingCard({ children, embedded = false }) {
+export function BillingCard({ children, embedded = false, asset = null }) {
   if (embedded) {
     // Rendered inside the /paused iframe: the parent page already supplies
     // the card chrome (logo, shadow, rounded corners), so this just lays
@@ -304,12 +319,34 @@ export function BillingCard({ children, embedded = false }) {
     );
   }
 
+  // Brand this as the customer's asset, not the generic Nova Bloom app:
+  // its own logo picture, falling back to the app logo only if the asset
+  // has none / hasn't loaded, plus its name and description underneath.
+  const logoSrc = asset?.logo ? `/api/mediaroom?media=${btoa(asset.logo)}` : mosyThemeConfigs.mosyAppLogo;
+  const logoAlt = asset?.asset_name || mosyThemeConfigs.mosyAppName;
+
   return (
     <div className="billing_shell">
       <div className="billing_card">
-        {mosyThemeConfigs.mosyAppLogo ? (
+        {logoSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={mosyThemeConfigs.mosyAppLogo} alt={mosyThemeConfigs.mosyAppName} className="billing_logo" />
+          <img
+            src={logoSrc}
+            alt={logoAlt}
+            className="billing_logo"
+            onError={(e) => {
+              if (mosyThemeConfigs.mosyAppLogo && e.currentTarget.src !== mosyThemeConfigs.mosyAppLogo) {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = mosyThemeConfigs.mosyAppLogo;
+              }
+            }}
+          />
+        ) : null}
+        {asset?.asset_name || asset?.description ? (
+          <div className="billing_asset_brand">
+            {asset?.asset_name ? <div className="billing_asset_name">{asset.asset_name}</div> : null}
+            {asset?.description ? <div className="billing_asset_desc">{asset.description}</div> : null}
+          </div>
         ) : null}
         {children}
       </div>
