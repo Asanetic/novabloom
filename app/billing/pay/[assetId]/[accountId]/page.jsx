@@ -11,14 +11,15 @@ export async function generateMetadata() {
   };
 }
 
-export default async function BillingPayPage({ params }) {
+export default async function BillingPayPage({ params, searchParams }) {
   const { assetId, accountId } = await params;
+  const { embedded } = (await searchParams) || {};
   const snapshot = await getBillingSnapshot(assetId, accountId);
 
   return (
     <>
       <BillingStyles />
-      <PayClient assetId={assetId} accountId={accountId} snapshot={snapshot} />
+      <PayClient assetId={assetId} accountId={accountId} snapshot={snapshot} embedded={embedded === '1'} />
     </>
   );
 }

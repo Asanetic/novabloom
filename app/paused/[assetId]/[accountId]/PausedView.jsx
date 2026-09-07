@@ -25,21 +25,24 @@ const COPY = {
   }
 };
 
+const IFRAME_MIN_HEIGHT = 360;
+
 export default function PausedView({ assetId, accountId, snapshot }) {
   const [showPay, setShowPay] = useState(false);
   const [paid, setPaid] = useState(false);
+  const [iframeHeight, setIframeHeight] = useState(IFRAME_MIN_HEIGHT);
 
   useEffect(() => {
     function handleMessage(event) {
       const data = event?.data;
-      if (
-        data &&
-        data.type === 'novabloom:billing' &&
-        data.assetId === assetId &&
-        data.accountId === accountId &&
-        data.status === 'paid'
-      ) {
+      if (!data || data.assetId !== assetId || data.accountId !== accountId) return;
+
+      if (data.type === 'novabloom:billing' && data.status === 'paid') {
         setPaid(true);
+      } else if (data.type === 'novabloom:billing:resize' && Number.isFinite(data.height)) {
+        // Cosmetic only — keeps the embedded pay form's height matched to
+        // its actual content instead of a fixed guess.
+        setIframeHeight(Math.max(IFRAME_MIN_HEIGHT, Math.ceil(data.height)));
       }
     }
     window.addEventListener('message', handleMessage);
@@ -102,7 +105,8 @@ export default function PausedView({ assetId, accountId, snapshot }) {
         <div className="billing_iframe_wrap">
           <iframe
             className="billing_iframe"
-            src={`/billing/pay/${encodeURIComponent(assetId)}/${encodeURIComponent(accountId)}`}
+            style={{ height: iframeHeight }}
+            src={`/billing/pay/${encodeURIComponent(assetId)}/${encodeURIComponent(accountId)}?embedded=1`}
             title="Renew subscription"
           />
         </div>

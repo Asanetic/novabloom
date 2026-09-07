@@ -157,17 +157,56 @@ export function BillingStyles() {
       }
 
       .billing_iframe_wrap {
-        margin-top: 22px;
-        border-radius: calc(${mosyThemeConfigs.systemBorderRadius} / 1.5);
-        overflow: hidden;
-        border: 1px solid ${mosyThemeConfigs.genBorderColor}33;
+        margin: 22px -30px -36px;
+        padding-top: 18px;
+        border-top: 1px solid ${mosyThemeConfigs.genBorderColor}26;
+        animation: billing_slide_down 0.25s ease;
+      }
+
+      @keyframes billing_slide_down {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
       }
 
       .billing_iframe {
         width: 100%;
-        height: 560px;
+        height: 360px;
         border: 0;
         display: block;
+        transition: height 0.2s ease;
+      }
+
+      @media (max-width: 400px) {
+        .billing_iframe_wrap {
+          margin: 18px -18px -26px;
+        }
+      }
+
+      .billing_shell_embedded {
+        position: static;
+        inset: auto;
+        z-index: auto;
+        min-height: 0;
+        padding: 4px 30px 28px;
+        background: transparent;
+      }
+
+      .billing_card_embedded {
+        width: 100%;
+        max-width: none;
+        background: transparent;
+        color: ${mosyThemeConfigs.ctnTxt};
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+      }
+
+      @media (max-width: 400px) {
+        .billing_shell_embedded {
+          padding: 4px 18px 20px;
+        }
       }
 
       .billing_spinner {
@@ -253,7 +292,18 @@ export function BillingStyles() {
   );
 }
 
-export function BillingCard({ children }) {
+export function BillingCard({ children, embedded = false }) {
+  if (embedded) {
+    // Rendered inside the /paused iframe: the parent page already supplies
+    // the card chrome (logo, shadow, rounded corners), so this just lays
+    // out the same content flat instead of stacking a second card on top.
+    return (
+      <div className="billing_shell_embedded">
+        <div className="billing_card_embedded">{children}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="billing_shell">
       <div className="billing_card">

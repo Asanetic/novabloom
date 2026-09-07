@@ -63,7 +63,22 @@ function postToParent(assetId, accountId, status) {
   }
 }
 
-export default function PayClient({ assetId, accountId, snapshot }) {
+// Purely cosmetic: lets the /paused iframe size itself to the actual
+// content height instead of a fixed guess, so short steps (enter phone)
+// don't leave dead space and tall steps (waiting + paybill fallback) don't
+// get clipped. Never touches payment state.
+function reportHeightToParent(assetId, accountId) {
+  try {
+    if (window.parent && window.parent !== window) {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: 'novabloom:billing:resize', assetId, accountId, height }, '*');
+    }
+  } catch (err) {
+    // ignore — worst case the iframe keeps its default height
+  }
+}
+
+export default function PayClient({ assetId, accountId, snapshot, embedded = false }) {
   const [phone, setPhone] = useState(snapshot?.user?.phone_number || '');
   const [step, setStep] = useState('form'); // form | sending | waiting | success | failed
   const [errorMessage, setErrorMessage] = useState('');
@@ -73,9 +88,22 @@ export default function PayClient({ assetId, accountId, snapshot }) {
 
   useEffect(() => () => { cancelledRef.current = true; }, []);
 
+  // Cosmetic only: keep the parent /paused iframe sized to this page's
+  // actual content as steps change (form -> waiting -> success/failed).
+  useEffect(() => {
+    if (!embedded || typeof window === 'undefined' || typeof ResizeObserver === 'undefined') return undefined;
+
+    const report = () => reportHeightToParent(assetId, accountId);
+    const observer = new ResizeObserver(report);
+    observer.observe(document.documentElement);
+    report();
+
+    return () => observer.disconnect();
+  }, [embedded, assetId, accountId]);
+
   if (!snapshot?.found) {
     return (
-      <BillingCard>
+      <BillingCard embedded={embedded}>
         <div className="billing_headline">We couldn&apos;t find this account</div>
         <div className="billing_subtext">
           This payment link looks incomplete or out of date. Please reopen it from the app you were using.
@@ -175,7 +203,7 @@ export default function PayClient({ assetId, accountId, snapshot }) {
 
   if (step === 'success') {
     return (
-      <BillingCard>
+      <BillingCard embedded={embedded}>
         <span className="billing_badge_soft">Payment confirmed</span>
         <div className="billing_headline">You&apos;re all set</div>
         <div className="billing_subtext">
@@ -186,7 +214,7 @@ export default function PayClient({ assetId, accountId, snapshot }) {
   }
 
   return (
-    <BillingCard>
+    <BillingCard embedded={embedded}>
       <div className="billing_headline">Renew {subscription.subscription_name || 'Subscription'}</div>
       <div className="billing_subtext">Pay securely with M-Pesa to restore access instantly.</div>
       <div className="billing_amount">{subscription.currency} {subscription.amount}</div>

@@ -11,7 +11,7 @@ import {
   // Days past next_billing_date before a lapsed subscription moves from
   // a soft "restrictions" state to a full "/paused" block. Set to 0 for
   // instant hard block with no grace at all.
-  const GRACE_PERIOD_DAYS = 3;
+  const GRACE_PERIOD_DAYS = 0;
   
   // Where the hosted takeover pages live. Same host that will serve
   // /paused/[assetId]/[accountId] and /billing/pay/[assetId]/[accountId].
