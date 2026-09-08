@@ -1,3 +1,5 @@
+"use client";
+
 // app/billing/BillingShell.jsx
 //
 // Shared full-viewport shell + brand styling for /paused and /billing/pay.
@@ -6,6 +8,7 @@
 // behave as a true full-screen takeover regardless of what it's nested in
 // (an iframe on a POS device, a bare browser tab, or nested inside /paused).
 
+import { useState } from 'react';
 import mosyThemeConfigs from '../appConfigs/mosyTheme';
 
 export const SUPPORT_WHATSAPP = '254700000000'; // TODO: replace with the real Asanetic support line
@@ -297,6 +300,41 @@ export function BillingStyles() {
         padding: 10px;
       }
 
+      .billing_refresh_btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: none;
+        border: 1px solid ${mosyThemeConfigs.genBorderColor}40;
+        color: ${mosyThemeConfigs.ctnTxt};
+        opacity: 0.8;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        padding: 8px 14px;
+        border-radius: 999px;
+        margin-top: 4px;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+      }
+
+      .billing_refresh_btn:hover {
+        opacity: 1;
+      }
+
+      .billing_refresh_btn:active {
+        transform: scale(0.97);
+      }
+
+      .billing_refresh_btn svg {
+        width: 13px;
+        height: 13px;
+        transition: transform 0.4s ease;
+      }
+
+      .billing_refresh_btn.is_spinning svg {
+        transform: rotate(360deg);
+      }
+
       @media (max-width: 400px) {
         .billing_card {
           padding: 26px 18px;
@@ -351,6 +389,77 @@ export function BillingCard({ children, embedded = false, asset = null }) {
         {children}
       </div>
     </div>
+  );
+}
+
+// Reloads the page that's actually holding this one in an iframe — e.g. a
+// client's own site (123.com/pos) embedding /paused, or /paused embedding
+// /billing/pay inside itself — rather than just this frame. Useful after
+// a renewal so the host page picks the account back up without the visitor
+// having to go find its own refresh button (which may not be obvious, or
+// may not exist, inside their POS/kiosk chrome).
+//
+// window.top always points straight at the outermost window no matter how
+// many iframes deep this is (host page -> /paused -> /billing/pay), so the
+// same call works from either page without knowing the nesting depth.
+function refreshHostWindow() {
+  if (typeof window === 'undefined') return;
+
+  if (window.top && window.top !== window) {
+    try {
+      // Same-origin host (e.g. /paused reloading itself from the nested
+      // /billing/pay iframe) — this just works.
+      window.top.location.reload();
+      return;
+    } catch (err) {
+      // Cross-origin host (e.g. a client site on a different domain) —
+      // browsers block reload() from here by design. Ask the host page to
+      // do it itself instead; it just needs a small listener such as:
+      //   window.addEventListener('message', (e) => {
+      //     if (e.data?.type === 'novabloom:billing:refresh') location.reload();
+      //   });
+      try {
+        window.top.postMessage({ type: 'novabloom:billing:refresh' }, '*');
+        return;
+      } catch (err2) {
+        // fall through to reloading just this frame below
+      }
+    }
+  }
+
+  window.location.reload();
+}
+
+export function RefreshHostButton({ label = 'Refresh' }) {
+  const [spinning, setSpinning] = useState(false);
+
+  function handleClick() {
+    setSpinning(true);
+    refreshHostWindow();
+    // If refreshHostWindow ends up reloading *this* frame (no parent, or
+    // every fallback failed), the spin naturally gets cut off by the
+    // reload itself — this timeout only matters for the postMessage path,
+    // where this frame keeps running and the spin should settle back down.
+    setTimeout(() => setSpinning(false), 700);
+  }
+
+  return (
+    <button
+      type="button"
+      className={`billing_refresh_btn${spinning ? ' is_spinning' : ''}`}
+      onClick={handleClick}
+    >
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M13.5 8A5.5 5.5 0 1 1 11.9 4.1M13.5 2v3h-3"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      {label}
+    </button>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { BillingCard, SupportLine } from '../../../billing/BillingShell';
+import { BillingCard, RefreshHostButton, SupportLine } from '../../../billing/BillingShell';
 
 function formatDate(dateValue) {
   if (!dateValue) return '';
@@ -70,6 +70,7 @@ export default function PausedView({ assetId, accountId, snapshot }) {
         <span className="billing_badge_soft">All set</span>
         <div className="billing_headline">You&apos;re back up and running</div>
         <div className="billing_subtext">Payment received — this account has been renewed. You can close this window now.</div>
+        <RefreshHostButton label="Refresh and continue" />
       </BillingCard>
     );
   }
@@ -112,6 +113,7 @@ export default function PausedView({ assetId, accountId, snapshot }) {
         </div>
       )}
 
+      <RefreshHostButton />
       <SupportLine />
     </BillingCard>
   );

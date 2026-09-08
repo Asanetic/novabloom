@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import { BillingCard, SupportLine } from '../../../BillingShell';
+import { BillingCard, RefreshHostButton, SupportLine } from '../../../BillingShell';
 
 // Same tuned constants the admin dashboard's M-Pesa flow already ships
 // with (see payment-manager-client.jsx / prompt-payment.jsx) — not
@@ -209,6 +209,7 @@ export default function PayClient({ assetId, accountId, snapshot, embedded = fal
         <div className="billing_subtext">
           Your subscription has been renewed. You can close this window.
         </div>
+        {!embedded ? <RefreshHostButton label="Refresh and continue" /> : null}
       </BillingCard>
     );
   }
@@ -274,6 +275,10 @@ export default function PayClient({ assetId, accountId, snapshot, embedded = fal
         </button>
       ) : null}
 
+      {/* Not shown when embedded in /paused — that page already has its
+          own Refresh button, and this frame's window.top is the same
+          host window either way so a second one here would be redundant. */}
+      {!embedded ? <RefreshHostButton /> : null}
       <SupportLine />
     </BillingCard>
   );
